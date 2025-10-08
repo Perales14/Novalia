@@ -1,4 +1,5 @@
-﻿import { useMemo } from "react";
+﻿// src/app/auth/Register.tsx
+import { useMemo } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +20,8 @@ import OwnerExtras from "./components/forms/OwnerExtras";
 
 import { registerUser } from "../../application/use-cases/registerUser";
 import { registerAdapter } from "../../infrastructure/supabase/adapters/registerAdapter";
-
+import { supabase } from "../../infrastructure/supabase/client";
+import { env } from "../../infrastructure/config/env";
 type Form = any;
 
 export default function Register() {
@@ -80,11 +82,36 @@ export default function Register() {
     <p className="auth-subtitle">Completa tus datos para registrarte</p>
 
     {/* OAuth */}
-    <div className="oauth oauth-row-2">
-      <OAuthButton provider="google" />
-      <OAuthButton provider="apple" />
+<div className="oauth-section">
+  <div className="oauth-row">
+    <div className="oauth-btn-wrap">
+      <OAuthButton
+        provider="google"
+        onClick={() =>
+          supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+          })
+        }
+      />
     </div>
-    <DividerText>o</DividerText>
+
+    <div className="oauth-btn-wrap">
+      <OAuthButton
+        provider="apple"
+        onClick={() =>
+          supabase.auth.signInWithOAuth({
+            provider: "apple",
+            options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+          })
+        }
+      />
+    </div>
+  </div>
+</div>
+
+<DividerText>o</DividerText>
+
 
     {/* GRID 2 COLS */}
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

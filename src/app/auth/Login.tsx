@@ -1,18 +1,17 @@
 ﻿// src/app/auth/Login.tsx
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';                         // <-- new
+import { useEffect, useState } from 'react';                  
 import { supabase } from '../../infrastructure/supabase/client';
-
+import { env } from "../../infrastructure/config/env";
 import AuthHeader from './components/AuthHeader';
 import AuthLayout from './components/AuthLayout';
 import AuthCard from './components/AuthCard';
 import DividerText from './components/DividerText';
 import OAuthButton from './components/OAuthButton';
 import SiteFooter from './components/SiteFooter';
-import AccountTypeModal from './components/AccountTypeModal'; // <-- new
-import type { AccountType } from '../../shared/types/auth';       // <-- new
-
+import AccountTypeModal from './components/AccountTypeModal';
+import type { AccountType } from '../../shared/types/auth'; 
 import Button from '../../shared/components/Button';
 import TextField from '../../shared/components/fields/TextField';
 import PasswordField from '../../shared/components/fields/PasswordField';
@@ -21,10 +20,15 @@ import { Mail } from 'lucide-react';
 type Form = { email: string; password: string };
 
 export default function Login() {
+   
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<Form>();
   const nav = useNavigate();
-  const [openModal, setOpenModal] = useState(false);       // <-- new
-
+  const [openModal, setOpenModal] = useState(false);      
+   useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) nav("/dashboard");
+  });
+}, []);
   const onSubmit = async ({ email, password }: Form) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { alert(error.message); return; }
@@ -71,10 +75,26 @@ export default function Login() {
           </form>
 
           <DividerText>o continúa con</DividerText>
-          <div className="oauth">
-            <OAuthButton provider="google" onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })} />
-            <OAuthButton provider="apple"  onClick={() => supabase.auth.signInWithOAuth({ provider: 'apple'  })} />
-          </div>
+            <div className="oauth">
+            <OAuthButton
+              provider="google"
+              onClick={() =>
+              supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+              })
+              }
+            />
+            <OAuthButton
+              provider="apple"
+              onClick={() =>
+              supabase.auth.signInWithOAuth({
+                provider: "apple",
+                options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+              })
+              }
+            />
+            </div>
 
           {/* En vez de navegar directo, abrimos el modal */}
           <p style={{ textAlign:'center', marginTop: 14, color: 'var(--text-600)' }}>

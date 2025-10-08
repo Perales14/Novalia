@@ -1,15 +1,22 @@
-﻿import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../infrastructure/supabase/client';
+﻿// src/app/auth/Callback.tsx
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../infrastructure/supabase/client";
 
-export default function OAuthCallback() {
+export default function Callback() {
   const nav = useNavigate();
+
   useEffect(() => {
-    // Supabase manejará detectSessionInUrl; sólo validamos sesión y redirigimos
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) nav('/dashboard');
-      else nav('/auth/login');
-    });
-  }, [nav]);
-  return <p style={{ margin: '4rem', textAlign: 'center' }}>Procesando autenticación…</p>;
+    (async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        nav("/auth/login?error=callback");
+        return;
+      }
+      if (data.session) nav("/dashboard");
+      else nav("/auth/login");
+    })();
+  }, []);
+
+  return null; // o spinner
 }

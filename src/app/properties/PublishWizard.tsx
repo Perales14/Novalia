@@ -1,4 +1,5 @@
-﻿export default function PublishWizard() {
+﻿// src/app/properties/PublishWizard.tsx
+export default function PublishWizard() {
   return (
     <main style={{ maxWidth: 720, margin: '2rem auto' }}>
       <h1>Publish Wizard</h1>

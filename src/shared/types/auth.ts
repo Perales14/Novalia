@@ -1,3 +1,4 @@
+// src/shared/types/auth.ts
 export type AccountType = "buyer" | "agent" | "owner";
 
 export type UserRegisterDTO = {

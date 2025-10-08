@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from 'react';
+﻿// src/app/dashboard/Dashboard.tsx
+import { useEffect, useState } from 'react';
 import { supabase } from '../../infrastructure/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
 

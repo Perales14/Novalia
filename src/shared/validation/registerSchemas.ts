@@ -1,3 +1,4 @@
+// src/shared/validation/registerSchemas.ts
 import { z } from "zod";
 import type { AccountType } from "../../shared/types/auth";
 

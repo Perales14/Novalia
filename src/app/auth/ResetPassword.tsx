@@ -1,4 +1,5 @@
-﻿import { useForm } from 'react-hook-form';
+﻿// src/app/auth/ResetPassword.tsx
+import { useForm } from 'react-hook-form';
 import { supabase } from '../../infrastructure/supabase/client';
 
 type Form = { password: string };

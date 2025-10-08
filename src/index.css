@@ -162,6 +162,40 @@ button { cursor: pointer; }
   .col-span-2{ grid-column: auto; }
 }
 
+/* Contenedor centrado y con ancho controlado */
+.oauth-section {
+  width: 100%;
+  max-width: 720px;       /* ajústalo a tu card si quieres */
+  margin: 8px auto 0;     /* centra horizontal */
+  padding: 0 8px;         /* respiración lateral */
+}
+
+/* Grid responsivo: 1 col (mobile), 2 cols (desktop) */
+.oauth-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .oauth-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* Forzar que cada botón ocupe toda su celda */
+.oauth-btn-wrap {
+  display: flex;
+  width: 100%;
+}
+
+.oauth-btn-wrap > * {
+  flex: 1 1 auto;          /* estírase aunque el hijo tenga ancho propio */
+  min-height: 44px;        /* alto cómodo */
+}
+
+/* Si el componente renderiza <button> o <a>, también cúbrelos */
+.oauth-btn-wrap :where(button, a, div) {
+  width: 100%;
+}
 
 
 /* ===== CONTENEDOR AUTH (ahora scrolla y no se pega a header/footer) ===== */

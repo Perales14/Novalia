@@ -1,3 +1,4 @@
+// scr/app/auth/components/forms/BaseFields.tsx
 import TextField from "../../../../shared/components/fields/TextField";
 import PasswordField from "../../../../shared/components/fields/PasswordField";
 
