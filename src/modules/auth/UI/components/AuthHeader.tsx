@@ -1,6 +1,6 @@
 // src/app/auth/components/AuthHeader.tsx
 
-import logo from '../../../assets/icons/logo.svg';
+import logo from '../../../../shared/assets/icons/logo.svg';
 
 export default function AuthHeader(){
   return (

@@ -1,5 +1,5 @@
 /* src/modules/auth/index.css */
-@import "./shared/styles/tokens.css";
+@import "../../shared/styles/tokens.css";
 
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
@@ -29,7 +29,7 @@ button { cursor: pointer; }
 }
 .container-auth::before{
   content:""; position:absolute; inset:0;
-  background: url("/src/assets/images/login-hero.jpg") center/cover no-repeat; /* cover = recorta sin deformar */
+  background: url("../../shared/assets/images/login-hero.jpg") center/cover no-repeat; /* cover = recorta sin deformar */
   /* sin transform scale => no se agranda */
 }
 .container-auth::after{
@@ -211,7 +211,7 @@ button { cursor: pointer; }
 }
 .container-auth::before{
   content:""; position:absolute; inset:0;
-  background: url("/src/assets/images/login-hero.jpg") center/cover no-repeat; /* recorta sin deformar */
+  background: url("../../shared/assets/images/login-hero.jpg") center/cover no-repeat; /* recorta sin deformar */
 }
 .container-auth::after{
   content:""; position:absolute; inset:0;

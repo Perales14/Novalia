@@ -1,9 +1,9 @@
 // src/app/auth/components/AccountTypeModal.tsx
 import { useMemo, useState, useEffect } from "react";
 import Modal from "../../../../shared/UI/Modal";
-import buyerIcon from "../../../assets/icons/home-svgrepo-com.svg";
-import agentIcon from "../../../assets/icons/employee-svgrepo-com.svg";
-import orgIcon from "../../../assets/icons/building1-svgrepo-com.svg";
+import buyerIcon from "../../../../shared/assets/icons/home-svgrepo-com.svg";
+import agentIcon from "../../../../shared/assets//icons/employee-svgrepo-com.svg";
+import orgIcon from "../../../../shared/assets//icons/building1-svgrepo-com.svg";
 import type { AccountType } from "../../../../shared/types/auth";
 type Props = {
   open: boolean;

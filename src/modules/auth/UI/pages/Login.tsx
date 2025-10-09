@@ -87,8 +87,6 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       const msg = (error.message || "").toLowerCase();
-
-      // Si el correo no está verificado, ofrécele reenviar
       const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
       if (isUnconfirmed) {
         setNotice({

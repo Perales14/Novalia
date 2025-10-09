@@ -1,8 +1,7 @@
 // src/app/auth/components/OAuthButton.tsx
-
 import React from "react";
-import googleIcon from "../../../assets/icons/google.svg";
-import appleIcon from "../../../assets/icons/Apple_logo_grey.svg";
+import googleIcon from "../../../../shared/assets/icons/google.svg";
+import appleIcon from "../../../../shared/assets/icons/Apple_logo_grey.svg";
 
 type Provider = "google" | "apple";
 
