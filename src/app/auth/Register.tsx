@@ -1,5 +1,5 @@
 ﻿// src/app/auth/Register.tsx
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,11 +22,18 @@ import { registerUser } from "../../application/use-cases/registerUser";
 import { registerAdapter } from "../../infrastructure/supabase/adapters/registerAdapter";
 import { supabase } from "../../infrastructure/supabase/client";
 import { env } from "../../infrastructure/config/env";
+import Notice from "../../shared/components/Notice";
+
 type Form = any;
 
 export default function Register() {
   const [sp] = useSearchParams();
   const nav = useNavigate();
+
+  const [notice, setNotice] = useState<{
+    type: "success" | "error" | "info" | "warning";
+    text: React.ReactNode;
+  } | null>(null);
 
   const accountType = useMemo<AccountType | null>(() => {
     const t = sp.get("type");
@@ -41,8 +48,10 @@ export default function Register() {
   } = useForm<Form>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (f: Form) => {
+    setNotice(null);
+
     if (!accountType) {
-      alert("Selecciona un tipo de cuenta.");
+      setNotice({ type: "warning", text: "Selecciona un tipo de cuenta." });
       return;
     }
 
@@ -62,77 +71,140 @@ export default function Register() {
         registerAdapter
       );
 
-      alert(
-        accountType === "owner"
-          ? "Cuenta creada. Revisa tu correo y guarda tu código de organización en el dashboard."
-          : "Cuenta creada. Revisa tu correo para confirmar."
-      );
-      nav("/auth/login");
+      // Aviso y redirección a Login con email prellenado y bandera de "registered"
+      setNotice({
+        type: "success",
+        text:
+          accountType === "owner"
+            ? "Cuenta creada. Te enviamos un correo de verificación. Al iniciar sesión podrás ver tu código de organización en el dashboard."
+            : "Cuenta creada. Te enviamos un correo para confirmar tu cuenta.",
+      });
+
+      // 1s para que se alcance a leer y nav con query
+      setTimeout(() => {
+        nav(`/auth/login?registered=1&email=${encodeURIComponent(f.email)}`);
+      }, 800);
     } catch (e: any) {
-      alert(e?.message ?? "Ocurrió un error durante el registro.");
-    }
+  const code = e?.code || e?.message;
+  const msg = (e?.message || "").toString().toLowerCase();
+
+  if (code === "EMAIL_IN_USE") {
+    setNotice({
+      type: "warning",
+      text: (
+        <>
+          Este correo ya está registrado.{" "}
+          <Link to={`/auth/login?email=${encodeURIComponent(f.email)}`} style={{ color: "var(--brand-700)", fontWeight: 600 }}>
+            Inicia sesión
+          </Link>{" "}
+          o usa otro correo.
+        </>
+      ),
+    });
+    return;
+  }
+
+  // fallback por si algún entorno antiguo devuelve texto en lugar de code
+  const isDupEmail =
+    e?.status === 400 ||
+    msg.includes("already registered") ||
+    msg.includes("already exists") ||
+    msg.includes("duplicate key") ||
+    msg.includes("user already") ||
+    msg.includes("email address is already registered");
+
+  if (isDupEmail) {
+    setNotice({
+      type: "warning",
+      text: (
+        <>
+          Este correo ya está registrado.{" "}
+          <Link to={`/auth/login?email=${encodeURIComponent(f.email)}`} style={{ color: "var(--brand-700)", fontWeight: 600 }}>
+            Inicia sesión
+          </Link>{" "}
+          o usa otro correo.
+        </>
+      ),
+    });
+    return;
+  }
+
+  setNotice({
+    type: "error",
+    text: e?.message ?? "Ocurrió un error durante el registro.",
+  });
+}
+
   };
 
   return (
     <>
       <AuthHeader />
       <AuthLayout>
-  <AuthCard size="lg">   {/* <- antes: <AuthCard> */}
-    <h1 className="auth-title">Crear cuenta</h1>
-    <p className="auth-subtitle">Completa tus datos para registrarte</p>
+        <AuthCard size="lg">
+          <h1 className="auth-title">Crear cuenta</h1>
+          <p className="auth-subtitle">Completa tus datos para registrarte</p>
 
-    {/* OAuth */}
-<div className="oauth-section">
-  <div className="oauth-row">
-    <div className="oauth-btn-wrap">
-      <OAuthButton
-        provider="google"
-        onClick={() =>
-          supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
-          })
-        }
-      />
-    </div>
+          {notice && (
+            <Notice variant={notice.type} onClose={() => setNotice(null)}>
+              {notice.text}
+            </Notice>
+          )}
 
-    <div className="oauth-btn-wrap">
-      <OAuthButton
-        provider="apple"
-        onClick={() =>
-          supabase.auth.signInWithOAuth({
-            provider: "apple",
-            options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
-          })
-        }
-      />
-    </div>
-  </div>
-</div>
+          {/* OAuth */}
+          <div className="oauth-section">
+            <div className="oauth-row">
+              <div className="oauth-btn-wrap">
+                <OAuthButton
+                  provider="google"
+                  onClick={() =>
+                    supabase.auth.signInWithOAuth({
+                      provider: "google",
+                      options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+                    })
+                  }
+                />
+              </div>
 
-<DividerText>o</DividerText>
+              <div className="oauth-btn-wrap">
+                <OAuthButton
+                  provider="apple"
+                  onClick={() =>
+                    supabase.auth.signInWithOAuth({
+                      provider: "apple",
+                      options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
+                    })
+                  }
+                />
+              </div>
+            </div>
+          </div>
 
+          <DividerText>o</DividerText>
 
-    {/* GRID 2 COLS */}
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="form-grid">
-        <BaseFields register={register} errors={errors} />
-        {accountType === "agent" && (
-          <AgentExtras register={register} watch={watch} setValue={setValue} errors={errors} />
-        )}
-        {accountType === "owner" && <OwnerExtras register={register} errors={errors} />}
-      </div>
+          {/* GRID 2 COLS */}
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className="form-grid">
+              <BaseFields register={register} errors={errors} />
+              {accountType === "agent" && (
+                <AgentExtras register={register} watch={watch} setValue={setValue} errors={errors} />
+              )}
+              {accountType === "owner" && <OwnerExtras register={register} errors={errors} />}
+            </div>
 
-      <Button type="submit" disabled={isSubmitting} style={{ marginTop: 12 }}>
-        Crear cuenta
-      </Button>
-    </form>
+            <Button type="submit" disabled={isSubmitting} style={{ marginTop: 12 }}>
+              {isSubmitting ? "Creando..." : "Crear cuenta"}
+            </Button>
+          </form>
 
-    <p style={{ textAlign:'center', marginTop: 14, color: 'var(--text-600)' }}>
-      ¿Ya tienes cuenta? <Link to="/auth/login" style={{ color:'var(--brand-700)', fontWeight:600 }}>Inicia sesión aquí</Link>
-    </p>
-  </AuthCard>
-</AuthLayout>
+          <p style={{ textAlign: "center", marginTop: 14, color: "var(--text-600)" }}>
+            ¿Ya tienes cuenta?{" "}
+            <Link to="/auth/login" style={{ color: "var(--brand-700)", fontWeight: 600 }}>
+              Inicia sesión aquí
+            </Link>
+          </p>
+        </AuthCard>
+      </AuthLayout>
       <SiteFooter />
     </>
   );
