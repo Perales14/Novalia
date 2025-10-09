@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
-import { supabase } from '../../infrastructure/supabase/client';
+import { supabase } from '../../core/supabase/client';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
@@ -18,7 +18,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return () => { mounted = false; };
   }, []);
 
-  if (checking) return null;               // puedes poner un Spinner aquí
+  if (checking) return null;          
   if (!session) return <Navigate to="/auth/login" replace />;
   return <>{children}</>;
 }

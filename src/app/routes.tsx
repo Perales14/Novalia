@@ -1,13 +1,13 @@
 ﻿// src/app/routes.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from './auth/Login';
-import Register from './auth/Register';
-import ForgotPassword from './auth/ForgotPassword';
-import ResetPassword from './auth/ResetPassword';
-import OAuthCallback from './auth/Callback';
-import Dashboard from './dashboard/Dashboard';
-import PublishWizard from './properties/PublishWizard';
+import Dashboard from '../pages/Dashboard';
+import PublishWizard from '../modules/properties/UI/pages/PublishWizard';
 import AuthGuard from './guards/AuthGuard';
+import Login from '../modules/auth/UI/pages/Login';
+import Register from '../modules/auth/UI/pages/Register';
+import ForgotPassword from '../modules/auth/UI/pages/ForgotPassword';
+import ResetPassword from '../modules/auth/UI/pages/ResetPassword';
+import OAuthCallback from '../modules/auth/UI/pages/Callback';
 
 const withAuth = (el: React.ReactNode) => <AuthGuard>{el}</AuthGuard>;
 
