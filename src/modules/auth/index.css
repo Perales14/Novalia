@@ -175,11 +175,13 @@ button { cursor: pointer; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+  margin: 0 auto;
+  max-width: 300px;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .oauth-row { grid-template-columns: 1fr 1fr; }
-}
+} */
 
 /* Forzar que cada botón ocupe toda su celda */
 .oauth-btn-wrap {

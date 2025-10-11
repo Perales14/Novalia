@@ -21,6 +21,7 @@ export default function AgentExtras({ register, watch, setValue, errors }: Props
           onChange={(e) => {
             // limpiar org_code si desmarca
             if (!e.currentTarget.checked) setValue("org_code", "");
+            register("belongs_to_org").onChange(e);
           }}
         />
         <label htmlFor="belongs">Pertenezco a una organización</label>

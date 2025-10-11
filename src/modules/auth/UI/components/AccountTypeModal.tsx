@@ -13,11 +13,12 @@ type Props = {
   onContinue?: (v: AccountType | null) => void;
 };
 
+
 export default function AccountTypeModal({
   open, value, onSelect, onClose, onContinue,
 }: Props) {
   const [internal, setInternal] = useState<AccountType | null>(value ?? null);
-  const current = value !== undefined ? value : internal;
+  const current = value ?? internal;  // si value undefined o null, usa internal
 
   useEffect(() => { if (value !== undefined) setInternal(value); }, [value]);
 

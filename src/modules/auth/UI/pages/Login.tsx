@@ -190,7 +190,7 @@ export default function Login() {
                 })
               }
             />
-            <OAuthButton
+            {/* <OAuthButton
               provider="apple"
               onClick={() =>
                 supabase.auth.signInWithOAuth({
@@ -198,7 +198,7 @@ export default function Login() {
                   options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
                 })
               }
-            />
+            /> */}
           </div>
 
           <p style={{ textAlign: "center", marginTop: 14, color: "var(--text-600)" }}>

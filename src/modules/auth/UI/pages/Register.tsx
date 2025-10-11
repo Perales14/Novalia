@@ -165,7 +165,7 @@ export default function Register() {
                 />
               </div>
 
-              <div className="oauth-btn-wrap">
+              {/* <div className="oauth-btn-wrap">
                 <OAuthButton
                   provider="apple"
                   onClick={() =>
@@ -174,8 +174,8 @@ export default function Register() {
                       options: { redirectTo: env.VITE_OAUTH_REDIRECT_URL },
                     })
                   }
-                />
-              </div>
+                /> */}
+              {/* </div> */}
             </div>
           </div>
 
